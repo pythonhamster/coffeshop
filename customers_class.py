@@ -25,7 +25,8 @@ class CustomerClass(ttk.Frame):
         # create the tree frame and configure
         self.tree_frame = ttk.Frame(self)
         self.tree_frame.pack(expand=True, fill="both", side="top")
-        self.tree = ttk.Treeview(self.tree_frame, columns=("row id", "customer id", "first name", "last name", "email", "phone number"), show="headings", height=5)
+        self.tree = ttk.Treeview(self.tree_frame, columns=("row id", "customer id", "first name", "last name", "email", "phone number"),
+                                 show="headings", height=5, displaycolumns=("customer id", "first name", "last name", "email", "phone number"))
         self.tree.pack(expand=True, fill="both")
         self.tree.tag_configure("oddrow", background="light grey")
 
@@ -259,9 +260,10 @@ class CustomerClass(ttk.Frame):
 
         for index, row in enumerate(matches):
             if index % 2 != 0:
-                self.tree.insert("", tk.END, values=row)
+                self.tree.insert("", tk.END, values=(index,) + row)
             else:
-                self.tree.insert("", tk.END, values=row, tags=("oddrow", ))
+                self.tree.insert("", tk.END, values=(index,) + row, tags=("oddrow",))
+
 
 
     def disable_resize(self, e):
