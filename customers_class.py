@@ -140,7 +140,7 @@ class CustomerClass(ttk.Frame):
             self.tree.item(row, values=values)
             self.tree.tag_configure("red_font", foreground="red")
             self.tree.item(row, tags=("red_font",))
-            customer_id = values[0]
+            customer_id = values[1]  # made a fix here
             customer_dict = {"#1": "customer_id", "#2": "customer_name",
                              "#3": "customer_last_name", "#4": "customer_email",
                              "#5": "customer_phone"}
@@ -152,7 +152,6 @@ class CustomerClass(ttk.Frame):
     def apply_changes(self):
         #if somthing has been changed
         if self.changes:
-            print(self.changes)
             cnxn = sqlite3.connect("inventory.db")
             cursor = cnxn.cursor()
 
@@ -185,7 +184,7 @@ class CustomerClass(ttk.Frame):
                 self.tree.tag_configure("oddrow", background="light grey")
                 self.tree.tag_configure("evenrow", background="white")
 
-                if int(row_index) % 2 != 0:
+                if int(row_index) % 2 == 0:
                     self.tree.item(row, tags=("oddrow",))
                 else:
                     self.tree.item(row, tags=("evenrow",))
