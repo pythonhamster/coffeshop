@@ -84,8 +84,6 @@ class CustomerClass(ttk.Frame):
         self.tree.heading("email", text="email")
         self.tree.heading("phone number", text="phone number")
 
-        self.tree.bind("<B1-Motion>", self.disable_resize)
-
         #binding our tree to the double click
         self.tree.bind("<Double-1>", self.process_dc)
 
@@ -113,29 +111,29 @@ class CustomerClass(ttk.Frame):
                 self.tree.insert("", tk.END, values=(index,) + row, tags=("oddrow", ))
 
     def process_dc(self, event):
-        self.tree.update_idletasks()
-        row = self.tree.identify_row(event.y)
+        row_id = event.widget.selection()[0]
+        row_id_values = event.widget.item(row_id, "values")
+        row_index = int(row_id_values[0])
         column = self.tree.identify_column(event.x)
-        if column != "#1" and row:
-            column_index = int(column.replace("#", "")) - 1
+        if column != "#1" and row_id:
+            column_index = int(column.replace("#", ""))
 
-            existing_value = self.tree.item(row)["values"][column_index]
+            existing_value = self.tree.item(row_id)["values"][column_index]
 
-            x, y, width, height = self.tree.bbox(row, column)
+            x, y, width, height = self.tree.bbox(row_id, column)
 
             self.entry = tk.Entry(self.tree)
             self.entry.place(x=x, y=y, height=height, width=width)
             self.entry.insert(0, existing_value)
             self.entry.focus()
 
-            self.entry.bind("<Return>", lambda e: self.save_edit(row, column, column_index, existing_value))
+            self.entry.bind("<Return>", lambda e: self.save_edit(row_index, row_id, column, column_index, existing_value))
             self.entry.bind("<FocusOut>", lambda e: e.widget.destroy())
 
-    def save_edit(self, row, column, column_index, old_value):
+    def save_edit(self, row_index, row, column, column_index, old_value):
         new_value = self.entry.get()
         self.entry.destroy()
         if new_value != old_value:
-            row_index = self.tree.index(row)
             self.memory.append([row, column, column_index, old_value, row_index])
             values = list(self.tree.item(row)["values"])
             values[column_index] = new_value
@@ -146,7 +144,6 @@ class CustomerClass(ttk.Frame):
             customer_dict = {"#1": "customer_id", "#2": "customer_name",
                              "#3": "customer_last_name", "#4": "customer_email",
                              "#5": "customer_phone"}
-            row_index = self.tree.index(row)
             self.changes.append([customer_id, customer_dict[column], new_value, row_index, row])
             self.entry.destroy()
         else:
@@ -169,7 +166,7 @@ class CustomerClass(ttk.Frame):
 
 
             for i in self.changes:
-                if int(i[3]) % 2 != 0:
+                if int(i[3]) % 2 == 0:
                     self.tree.item(i[4], tags=("oddrow",))
                 else:
                     self.tree.item(i[4], tags=("evenrow",))
@@ -264,11 +261,6 @@ class CustomerClass(ttk.Frame):
             else:
                 self.tree.insert("", tk.END, values=(index,) + row, tags=("oddrow",))
 
-
-
-    def disable_resize(self, e):
-        if self.tree.identify_region(e.x, e.y) == "seperator":
-            return "break"
 
 # notes
 # get icon for add
