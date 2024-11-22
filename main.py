@@ -9,6 +9,8 @@ class SimpleWindow:
         self.root = root
         self.root.title("Coffee Shop")  # Set the window title
         self.root.geometry("1000x700")  # Set the window size
+        self.style = ttk.Style()
+        self.style.theme_use("aqua")
         # You can add more widgets here as needed
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(expand=True, fill="both")
