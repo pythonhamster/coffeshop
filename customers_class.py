@@ -102,6 +102,14 @@ class CustomerClass(ttk.Frame):
         customers = cursor.execute("""select * from customers""").fetchall()
         self.after(1, self.populate_tree, customers)
 
+
+    def fetch_data_apply(self):
+        cnxn = sqlite3.connect("inventory.db")
+        cursor = cnxn.cursor()
+
+        customers = cursor.execute("""select * from customers""").fetchall()
+        self.after(1, lambda: setattr(self, "search_list",  customers))
+
     def populate_tree(self, customers):
         self.search_list = customers
         for index, row in enumerate(customers):
@@ -171,6 +179,8 @@ class CustomerClass(ttk.Frame):
                     self.tree.item(i[4], tags=("evenrow",))
             self.memory.clear()
             self.changes.clear()
+            self.search_list.clear()
+            threading.Thread(target= self.fetch_data_apply).start()
 
     def reset(self):
         if self.memory:
@@ -259,6 +269,9 @@ class CustomerClass(ttk.Frame):
                 self.tree.insert("", tk.END, values=(index,) + row)
             else:
                 self.tree.insert("", tk.END, values=(index,) + row, tags=("oddrow",))
+
+
+
 
 
 # notes
