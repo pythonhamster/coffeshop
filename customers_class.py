@@ -2,6 +2,7 @@ import threading
 from tkinter import ttk
 import tkinter as tk
 import sqlite3
+from add_customers import AddCustomer
 from PIL import Image, ImageDraw, ImageTk
 from PIL.ImageOps import expand
 
@@ -65,7 +66,7 @@ class CustomerClass(ttk.Frame):
         self.email_button.pack(side="left", expand=True, padx=5, pady=5)
 
         self.add_image = tk.PhotoImage(file="png/003-mail.png")
-        self.add_button = tk.Button(self.button_frame, text="Add", command=self.add, image=self.add_image, compound=tk.LEFT, width=100, height=40)
+        self.add_button = tk.Button(self.button_frame, text="Add", command=self.run_add, image=self.add_image, compound=tk.LEFT, width=100, height=40)
         self.add_button.pack(side="left", expand=True, padx=5, pady=5)
 
         # configuring all the tree columns
@@ -202,40 +203,18 @@ class CustomerClass(ttk.Frame):
             self.memory.clear()
             self.changes.clear()
 
-    def add(self):
+
+    def run_add(self):
         if not self.has_add:
-            self.add_window = tk.Toplevel(self)
+            add_window = AddCustomer()
             self.has_add = True
-            self.add_window.geometry("300x350")
-            first_name_label = ttk.Label(self.add_window, text="First Name:")
-            first_name_label.grid(row=0, column=0)
 
-            first_name_box = tk.Entry(self.add_window)
-            first_name_box.grid(row=1, column=0)
+        def on_closing():
+            add_window.destroy()
+            self.has_add = False
 
-            last_name_label = ttk.Label(self.add_window, text="Last Name:")
-            last_name_label.grid(row=2, column=0)
+        add_window.protocol("WM_DELETE_WINDOW", on_closing)
 
-            last_name_box = tk.Entry(self.add_window)
-            last_name_box.grid(row=3, column=0)
-
-            email_label = ttk.Label(self.add_window, text="Email:")
-            email_label.grid(row=4, column=0)
-
-            email_box = tk.Entry(self.add_window)
-            email_box.grid(row=5, column=0)
-
-            phone_number_label = ttk.Label(self.add_window, text="Phone Number:")
-            phone_number_label.grid(row=6, column=0)
-
-            phone_number = tk.Entry(self.add_window)
-            phone_number.grid(row=7, column=0)
-
-            def on_closing():
-                self.add_window.destroy()
-                self.has_add = False
-
-            self.add_window.protocol("WM_DELETE_WINDOW", on_closing)
     #search bar disappear methods
     def search_bar_clicked(self, e):
         if self.search_bar.get() == " Search...":
