@@ -65,8 +65,8 @@ class CustomerClass(ttk.Frame):
         self.email_button = tk.Button(self.button_frame, text="Email", image=self.email_image, compound=tk.LEFT, width=100, height=40)
         self.email_button.pack(side="left", expand=True, padx=5, pady=5)
 
-        self.add_image = tk.PhotoImage(file="png/003-mail.png")
-        self.add_button = tk.Button(self.button_frame, text="Add", command=self.run_add, image=self.add_image, compound=tk.LEFT, width=100, height=40)
+        self.add_image = tk.PhotoImage(file="png/add-user.png")
+        self.add_button = tk.Button(self.button_frame, text=" Add", command=self.run_add, image=self.add_image, compound=tk.LEFT, width=100, height=40)
         self.add_button.pack(side="left", expand=True, padx=5, pady=5)
 
         # configuring all the tree columns
