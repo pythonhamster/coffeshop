@@ -111,6 +111,7 @@ class CustomerClass(ttk.Frame):
         customers = cursor.execute("""select * from customers""").fetchall()
         self.after(1, lambda: setattr(self, "search_list",  customers))
 
+
     def populate_tree(self, customers):
         self.search_list = customers
         for index, row in enumerate(customers):
@@ -206,14 +207,14 @@ class CustomerClass(ttk.Frame):
 
     def run_add(self):
         if not self.has_add:
-            add_window = AddCustomer()
+            self.add_window = AddCustomer()
             self.has_add = True
 
         def on_closing():
-            add_window.destroy()
+            self.add_window.destroy()
             self.has_add = False
 
-        add_window.protocol("WM_DELETE_WINDOW", on_closing)
+        self.add_window.protocol("WM_DELETE_WINDOW", on_closing)
 
     #search bar disappear methods
     def search_bar_clicked(self, e):
