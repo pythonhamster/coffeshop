@@ -20,6 +20,8 @@ class CustomerClass(ttk.Frame):
         self.memory = []
         self.has_add = False
         self.search_list = None
+        self.delete_list = []
+
 
         self.pack_propagate(0)
 
@@ -69,6 +71,10 @@ class CustomerClass(ttk.Frame):
         self.add_button = tk.Button(self.button_frame, text=" Add", command=self.run_add, image=self.add_image, compound=tk.LEFT, width=100, height=40)
         self.add_button.pack(side="left", expand=True, padx=5, pady=5)
 
+        self.delete_image = tk.PhotoImage(file="png/delete.png")
+        self.delete_button = tk.Button(self.button_frame, text="Delete", command=self.delete, image=self.delete_image, compound=tk.LEFT, width=100, height=40)
+        self.delete_button.pack(side="left", expand=True, padx=5, pady=5)
+
         # configuring all the tree columns
 
         self.tree.column("row id", width=0, stretch=False)
@@ -87,6 +93,7 @@ class CustomerClass(ttk.Frame):
 
         #binding our tree to the double click
         self.tree.bind("<Double-1>", self.process_dc)
+        self.tree.bind("<ButtonRelease-1>", self.process_sc)
 
         #binding our search bar to the disappear methods
         self.search_bar.bind("<FocusIn>", self.search_bar_clicked)
@@ -140,6 +147,13 @@ class CustomerClass(ttk.Frame):
             self.entry.bind("<Return>", lambda e: self.save_edit(row_index, row_id, column, column_index, existing_value))
             self.entry.bind("<FocusOut>", lambda e: e.widget.destroy())
 
+    def process_sc(self, event):
+        row_id = event.widget.selection()[0]
+        row_id_values = event.widget.item(row_id, "values")
+        customer_id = int(row_id_values[1])
+        print(customer_id)
+        self.delete_list.append(customer_id)
+
     def save_edit(self, row_index, row, column, column_index, old_value):
         new_value = self.entry.get()
         self.entry.destroy()
@@ -184,6 +198,12 @@ class CustomerClass(ttk.Frame):
             self.search_list.clear()
             threading.Thread(target= self.fetch_data_apply).start()
 
+
+    def delete(self):
+        pass
+
+
+
     def reset(self):
         if self.memory:
             for memory in self.memory:
@@ -207,7 +227,7 @@ class CustomerClass(ttk.Frame):
 
     def run_add(self):
         if not self.has_add:
-            self.add_window = AddCustomer()
+            self.add_window = AddCustomer(self)
             self.has_add = True
 
         def on_closing():
@@ -256,3 +276,5 @@ class CustomerClass(ttk.Frame):
 
 # notes
 # get icon for add
+# no duplicates
+# delete

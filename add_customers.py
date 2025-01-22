@@ -6,8 +6,9 @@ from tkinter import ttk
 
 
 class AddCustomer(tk.Toplevel):
-    def __init__(self):
+    def __init__(self, master):
         super().__init__()
+        self.master = master
         self.geometry("300x260")
         self.title("Add Customer")
         self.style = ttk.Style()
@@ -53,6 +54,4 @@ class AddCustomer(tk.Toplevel):
         cursor.execute("insert into customers (customer_name, customer_last_name, customer_email, customer_phone) values (?, ?, ?, ?)",
                        (first_name, last_name, email, phone_number))
         cnxn.commit()
-
-    def after_add(self, func, *args):
-        self.after(1, func, args)
+        self.after(1, self.master.fetch_data)
