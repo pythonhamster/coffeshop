@@ -1,4 +1,6 @@
 import threading
+import tkinter.messagebox
+from threading import Thread
 from tkinter import ttk
 import tkinter as tk
 import sqlite3
@@ -29,7 +31,7 @@ class CustomerClass(ttk.Frame):
         self.tree_frame = ttk.Frame(self)
         self.tree_frame.pack(expand=True, fill="both", side="top")
         self.tree = ttk.Treeview(self.tree_frame, columns=("row id", "customer id", "first name", "last name", "email", "phone number"),
-                                 show="headings", height=5, displaycolumns=("customer id", "first name", "last name", "email", "phone number"))
+                                 show="headings", height=5, displaycolumns=("customer id", "first name", "last name", "email", "phone number"), selectmode="extended")
         self.tree.pack(expand=True, fill="both")
         self.tree.tag_configure("oddrow", background="light grey")
 
@@ -148,11 +150,14 @@ class CustomerClass(ttk.Frame):
             self.entry.bind("<FocusOut>", lambda e: e.widget.destroy())
 
     def process_sc(self, event):
-        row_id = event.widget.selection()[0]
-        row_id_values = event.widget.item(row_id, "values")
-        customer_id = int(row_id_values[1])
-        print(customer_id)
-        self.delete_list.append(customer_id)
+        #print(self.tree.selection())
+        pass
+        # row_id = event.widget.selection()[0]
+        # row_id_values = event.widget.item(row_id, "values")
+        # customer_id = int(row_id_values[1])
+        # print(customer_id)
+        # self.delete_list.append(customer_id)
+
 
     def save_edit(self, row_index, row, column, column_index, old_value):
         new_value = self.entry.get()
@@ -198,9 +203,25 @@ class CustomerClass(ttk.Frame):
             self.search_list.clear()
             threading.Thread(target= self.fetch_data_apply).start()
 
+    def run_delete(self, customers):
+        print("run_delete")
+        for i in customers:
+            customer_id = self.tree.item(i)["values"][1]
+            cnxn = sqlite3.connect("inventory.db")
+            cursor = cnxn.cursor()
+            cursor.execute(f"delete from customers where customer_id=?", (customer_id,))
+            cnxn.commit()
+        self.after(1, self.fetch_data)
 
     def delete(self):
-        pass
+        proceed = tkinter.messagebox.askyesno("~CONFIRM~", "Are you sure you want to delete the highlighted customers?")
+        if proceed:
+            selected = self.tree.selection()
+            threading.Thread(target=self.run_delete, args=(selected,)).start()
+
+
+        #row_id_values = event.widget.item(row_id, "values")
+         #customer_id = int(row_id_values[1])
 
 
 
