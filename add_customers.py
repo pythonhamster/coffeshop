@@ -40,8 +40,13 @@ class AddCustomer(tk.Toplevel):
         self.phone_number.pack()
 
         self.submit_button = tk.Button(self, text="Submit", background="#ebf2f2",
-                                       command=lambda: threading.Thread(target=self.add_customer).start())
+                                       command=self.confirm)
         self.submit_button.pack()
+
+    def confirm(self):
+        proceed = tk.messagebox.askyesno("~CONFIRM~", "Are you sure you want add the new customers?")
+        if proceed:
+            threading.Thread(target=self.add_customer).start()
 
     def add_customer(self):
         first_name = self.first_name_box.get()
@@ -55,3 +60,6 @@ class AddCustomer(tk.Toplevel):
                        (first_name, last_name, email, phone_number))
         cnxn.commit()
         self.after(1, self.master.fetch_data)
+
+
+

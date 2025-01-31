@@ -122,6 +122,7 @@ class CustomerClass(ttk.Frame):
 
 
     def populate_tree(self, customers):
+        self.clear_tree()
         self.search_list = customers
         for index, row in enumerate(customers):
             if index % 2 != 0:
@@ -211,7 +212,7 @@ class CustomerClass(ttk.Frame):
             cursor = cnxn.cursor()
             cursor.execute(f"delete from customers where customer_id=?", (customer_id,))
             cnxn.commit()
-        self.after(1, self.fetch_data)
+        self.after(1, lambda: threading.Thread(target=self.fetch_data).start())
 
     def delete(self):
         proceed = tkinter.messagebox.askyesno("~CONFIRM~", "Are you sure you want to delete the highlighted customers?")
@@ -257,6 +258,7 @@ class CustomerClass(ttk.Frame):
 
         self.add_window.protocol("WM_DELETE_WINDOW", on_closing)
 
+
     #search bar disappear methods
     def search_bar_clicked(self, e):
         if self.search_bar.get() == " Search...":
@@ -296,6 +298,4 @@ class CustomerClass(ttk.Frame):
 
 
 # notes
-# get icon for add
-# no duplicates
-# delete
+# - make refresh
