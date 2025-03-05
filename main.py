@@ -34,12 +34,6 @@ class SimpleWindow:
         self.tab4_icon = tk.PhotoImage(file="png/004-money.png")
         self.notebook.add(tab4, text="Customers", image=self.tab4_icon, compound=tk.LEFT)
 
-
-
-
-
-
-
 if __name__ == "__main__":
     # Step 1: Create the main application window
     root = tk.Tk()

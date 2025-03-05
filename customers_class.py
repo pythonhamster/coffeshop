@@ -1,10 +1,14 @@
 import threading
 import tkinter.messagebox
+from distutils.command.check import check
+from logging import exception
 from threading import Thread
 from tkinter import ttk
 import tkinter as tk
 import sqlite3
 from add_customers import AddCustomer
+
+import webbrowser
 from PIL import Image, ImageDraw, ImageTk
 from PIL.ImageOps import expand
 
@@ -66,7 +70,7 @@ class CustomerClass(ttk.Frame):
         self.reset_button.pack(side="left", expand=True, padx=5, pady=5)
 
         self.email_image = tk.PhotoImage(file="png/003-mail.png")
-        self.email_button = tk.Button(self.button_frame, text="Email", image=self.email_image, compound=tk.LEFT, width=100, height=40)
+        self.email_button = tk.Button(self.button_frame, text="Email", image=self.email_image, compound=tk.LEFT, command=self.email, width=100, height=40)
         self.email_button.pack(side="left", expand=True, padx=5, pady=5)
 
         self.add_image = tk.PhotoImage(file="png/add-user.png")
@@ -246,6 +250,24 @@ class CustomerClass(ttk.Frame):
             self.memory.clear()
             self.changes.clear()
 
+    def email(self):
+        selected = self.tree.selection()
+        emails = []
+        for i in selected:
+            customer_email = self.tree.item(i)["values"][4]
+            #print(customer_id)
+            emails.append(customer_email)
+        print(emails)
+        #subprocess.run(["open", "-a", "mail"])
+        try:
+            mailto_link = f"https://mail.google.com/mail/?view=cm&fs=1&to={','.join(emails)}"
+            webbrowser.open(mailto_link)
+        except Exception as e:
+            print("failed")
+
+
+
+
 
     def run_add(self):
         if not self.has_add:
@@ -298,4 +320,4 @@ class CustomerClass(ttk.Frame):
 
 
 # notes
-# - make refresh
+
